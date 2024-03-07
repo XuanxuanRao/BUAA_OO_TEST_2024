@@ -3,19 +3,19 @@ import re as regex
 import time
 import os
 import calc
-import math
 
 from sympy import *
 
 '''
     [ run the evaluation machine according to the following steps ]
-    1.  If you hava already packaged the code into a JAR file, modify [jarName] to the name of JAR file and modify [need_to_pack] to false;
-        else place the folder containing your source code in the current directory and modify [codeSrcDirectory] to the name of your source code folder
-    2.  Modify [MainClass] to the name of your main class
-    3.  Modify [inputFile] to the name of your input file that stores test data
-    4.  If you only want to see evaluation information about errors, set [outputMode] to 1 (Optional)
+    1.  If you hava already packaged the code into a JAR file, modify [jarName] to the name of JAR file and modify [need_to_pack] to false.
+        Else place the folder containing your source code in the current directory, Modify [codeSrcDirectory] to the name of your source code folder and
+        modify [MainClass] to the name of your main class
+        
+    2.  Modify [inputFile] to the name of your input file that stores test data
+    
+    3.  If you only want to see evaluation information about errors, set [outputMode] to 1 (Optional)
 '''
-
 
 # here are some variables that you need to modify based on your code
 # true: you have already packaged the code into a JAR file; false: you place src file in the current directory
@@ -56,23 +56,26 @@ def create_jar():
 
 
 def is_valid_val(a, b) -> bool:
-    if max(a, b) == 0:
-        return math.fabs(a - b) < 0.01
+    if Max(a, b) == 0:
+        return Abs(a - b) < 0.01
     else:
-        return math.fabs(a - b) / math.fabs(max(a, b)) < 0.0001
+        return Abs(a - b) / Abs(Max(a, b)) < 0.0001
 
 
-def check(standard: str, functions: list, output: str) -> bool:
-    """if outputExpr has (), return WRONG_FORMAT;
-    if outputExpr is not equal to inputExpr, return WRONG_VAL; otherwise, return AC(correct answer)"""
-    standard_expr = regex.sub(r'\^', r'**', regex.sub(r'\b0+(\d+)', r'\1', standard))
-    output_expr = sympify(output)
+def check(standard: str, functions: list, output: str) -> (bool, str):
+    """
+    if outputExpr has (), return WRONG_FORMAT;
+    if outputExpr is not equal to inputExpr, return WRONG_VAL; otherwise, return AC(correct answer)
+    """
+    standard_expr = calc.calc(regex.sub(r'\^', r'**', regex.sub(r'\b0+(\d+)', r'\1', standard)), [regex.sub(r'\^', r'**', function) for function in functions])
+    output_expr = simplify(output)
     result = true
+    x = symbols('x')
     for val in values:
-        if not is_valid_val(output_expr.subs(Symbol('x'), val), calc.calc(standard_expr, [regex.sub(r'\^', r'**', function) for function in functions], val)):
+        if not is_valid_val(standard_expr.subs(x, val), output_expr.subs(x, val)):
             result = false
             break
-    return result
+    return result, standard_expr
 
 
 if __name__ == "__main__":
@@ -109,7 +112,7 @@ if __name__ == "__main__":
             outfile.write(output_str + '\n')
             judge_file.write(str(run_time) + '\n')
             program_run_time += run_time
-            res = check(standard, functions, output_str)
+            res, standard_expr = check(standard, functions, output_str)
             if res == true and outputMode == 0:
                 print("pass test " + str(count))
             elif res == false:
@@ -117,6 +120,7 @@ if __name__ == "__main__":
                 print("fail test " + str(count))
                 print("input: " + str(standard))
                 print("output: " + str(output_str))
+                print("expected: " + str(standard_expr))
     if correct == true:
         print("All tests passed!")
         print("Average running time: " + str(program_run_time / count))
