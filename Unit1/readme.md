@@ -1,4 +1,4 @@
-# 第一单元 hw2 自动评测机
+# 第一单元自动评测机
 
 ### 一、使用方法
 
@@ -27,9 +27,11 @@
   inputFile = 'in.txt'
   # 1: only show the evaluation information about errors; 0: show the evaluation information about all
   outputMode = 0
+  # the name of your JAR file
+  jarName = 'main.jar'
   ```
 
-  - 如果你选择将 jar 包放置到当前目录下，设置 `need_to_pack` 为 `false`，不需要填写 `codeSrcDirectory` 和 `MainClassName`；如果你选择直接将存放源代码的文件夹拷贝到当前目录下，设置 `need_to_pack` 为 `true` , `codeSrcDirectory `为存放源代码的文件夹的名称，`MainClassName` 为你的代码中入口函数（Main方法）所在类的类名
+  - 如果你选择将 jar 包放置到当前目录下，设置 `need_to_pack` 为 `false`，不需要填写 `codeSrcDirectory` 和 `MainClassName`，将 `jarName` 改为你的jar包名称；如果你选择直接将存放源代码的文件夹拷贝到当前目录下，设置 `need_to_pack` 为 `true` , `codeSrcDirectory `为存放源代码的文件夹的名称，`MainClassName` 为你的代码中入口函数（Main方法）所在类的类名，不需要填写 `jarName`
   - `in.txt` 用于存放输入数据
   - 如果你只想看到未通过测试数据的评测结果，可以设置 `outputMode` 为 $1$
 
