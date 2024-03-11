@@ -3,7 +3,6 @@ import re as regex
 import time
 import os
 import calc
-
 from sympy import *
 
 '''
@@ -28,8 +27,12 @@ MainClassName = 'Main'
 inputFile = 'in.txt'
 # 1: only show the evaluation information about errors; 0: show the evaluation information about all
 outputMode = 0
+# the name of your JAR file
+jarName = 'main.jar'
+
+
+values = [0, 1, -1, 2, -2]
 program_run_time = 0.0
-values = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 count = 0
 
 
@@ -67,7 +70,8 @@ def check(standard: str, functions: list, output: str) -> (bool, str):
     if outputExpr has (), return WRONG_FORMAT;
     if outputExpr is not equal to inputExpr, return WRONG_VAL; otherwise, return AC(correct answer)
     """
-    standard_expr = calc.calc(regex.sub(r'\^', r'**', regex.sub(r'\b0+(\d+)', r'\1', standard)), [regex.sub(r'\^', r'**', function) for function in functions])
+    expr = regex.sub(r'\^', r'**', regex.sub(r'\b0+(\d+)', r'\1', standard).replace("dx", "diff"))
+    standard_expr = calc.calc(expr, [regex.sub(r'\^', r'**', function) for function in functions])
     output_expr = simplify(output)
     result = true
     x = symbols('x')
@@ -94,7 +98,7 @@ if __name__ == "__main__":
                 functions.append(infile.readline().strip())
             standard = infile.readline().strip()
             start_time = time.perf_counter()
-            process = subprocess.Popen(['java', '-jar', 'main.jar'],
+            process = subprocess.Popen(['java', '-jar', jarName],
                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
             input_str = str(n) + '\n'
             for func in functions:
@@ -120,7 +124,7 @@ if __name__ == "__main__":
                 print("fail test " + str(count))
                 print("input: " + str(standard))
                 print("output: " + str(output_str))
-                print("expected: " + str(standard_expr))
+                print("expected: " + regex.sub(r'\*\*', '^', str(standard_expr)))
     if correct == true:
         print("All tests passed!")
         print("Average running time: " + str(program_run_time / count))

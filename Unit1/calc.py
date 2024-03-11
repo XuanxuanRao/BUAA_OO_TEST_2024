@@ -1,4 +1,4 @@
-from sympy import symbols, exp, lambdify
+from sympy import symbols, exp, lambdify, diff
 import re
 x, y, z = symbols('x y z')
 def calc(expression: str, functions: list) -> str:
