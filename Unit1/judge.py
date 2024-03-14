@@ -31,7 +31,7 @@ outputMode = 0
 jarName = 'main.jar'
 
 
-values = [0, 1, -1, 2, -2]
+
 program_run_time = 0.0
 count = 0
 
@@ -73,13 +73,7 @@ def check(standard: str, functions: list, output: str) -> (bool, str):
     expr = regex.sub(r'\^', r'**', regex.sub(r'\b0+(\d+)', r'\1', standard).replace("dx", "diff"))
     standard_expr = calc.calc(expr, [regex.sub(r'\^', r'**', function) for function in functions])
     output_expr = simplify(output)
-    result = true
-    x = symbols('x')
-    for val in values:
-        if not is_valid_val(standard_expr.subs(x, val), output_expr.subs(x, val)):
-            result = false
-            break
-    return result, standard_expr
+    return output_expr.equals(standard_expr), standard_expr
 
 
 if __name__ == "__main__":
@@ -124,7 +118,7 @@ if __name__ == "__main__":
                 print("fail test " + str(count))
                 print("input: " + str(standard))
                 print("output: " + str(output_str))
-                print("expected: " + regex.sub(r'\*\*', '^', str(standard_expr)))
+                print("expected: " + regex.sub(r'\*\*', '^', regex.sub(r'\*\*', '^', str(standard_expr))))
     if correct == true:
         print("All tests passed!")
         print("Average running time: " + str(program_run_time / count))
